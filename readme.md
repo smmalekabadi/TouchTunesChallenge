@@ -22,6 +22,8 @@ git clone https://github.com/username/project.git
 ### Configuration
 
 After cloning the project, you will need to configure it by adding your API key to the `.env` file. Replace the `DEMO_KEY` with your actual API key.
+
+Also, you can change the config.ini to see what ever result 
 ### Run
 if you want to run it for the first time:
 
@@ -29,13 +31,13 @@ if you want to run it for the first time:
 docker-compose up
 ```
 
-After the first time you can run it via:
+if you changed the config.ini remember to rebuild using this command:
 
 ```
-docker-compose up --no-build
+docker-compose up  --force-recreate --no-deps --build 
 ```
-#### Run docker stand alone
 
+#### Run docker stand alone with default config
 
 ```
 docker run ---env-file ./.env malekabadi/touchtunes_challenge:latest
