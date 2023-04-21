@@ -38,7 +38,7 @@ docker-compose up --no-build
 
 
 ```
-docker run ---env-file ./.env
+docker run ---env-file ./.env malekabadi/touchtunes_challenge:latest
 ```
 
 ### Troubleshooting

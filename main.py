@@ -13,16 +13,21 @@ NUMBER_OF_DAY_RANGE = 7
 
 
 def get_asteroid_data(start_date, end_date):
-    r = requests.get(
-        'https://api.nasa.gov/neo/rest/v1/feed?start_date=' + start_date + '&end_date=' + end_date + '&api_key=' +
-        os.getenv("API_KEY"),
-        headers={'Accept': 'application/json'})
-    # print(f"Status Code: {r.status_code}, Content: {r.json()}")
+    r = None
+    try:
+        r = requests.get(
+            'https://api.nasa.gov/neo/rest/v1/feed?start_date=' + start_date + '&end_date=' + end_date + '&api_key=' +
+            os.getenv("API_KEY"),
+            headers={'Accept': 'application/json'})
+        r.raise_for_status()
+    except requests.exceptions.HTTPError:
+        print(f"Status Code: {r.status_code}, Content: {r.json()}")
+        exit(1)
     response_json = r.json()
     return response_json
 
 
-def create_table():
+def create_asteroid_data_table():
     start_date = date(2019, 10, 31)
     end_date = date(2019, 11, 2)
     date_start_str = start_date.strftime('%Y-%m-%d')
@@ -97,7 +102,7 @@ def recent_hazardous_asteroid():
 if __name__ == '__main__':
     load_dotenv()
     print(f"\t\t\ttable of Near Of Earth Asteroid")
-    create_table()
+    create_asteroid_data_table()
     print(f"\n\n\t table of Velocity of fastest, slowest, mean and median ")
     calculate_velocities()
     print(f"\n\n\t\t\t\ttable of Near Of Earth Asteroid which potentially hazardous")
