@@ -1,14 +1,10 @@
-# hardcoded dates and test
-
 import os
-
 import requests
-import json
 from datetime import datetime, date, timedelta
 from prettytable import PrettyTable
 from dotenv import load_dotenv
-
-NUMBER_OF_HAZARDOUS_ASTEROID = 3
+from configparser import ConfigParser
+NUMBER_OF_HAZARDOUS_ASTEROID=3
 NUMBER_OF_DAY_RANGE = 7
 
 
@@ -27,12 +23,8 @@ def get_asteroid_data(start_date, end_date):
     return response_json
 
 
-def create_asteroid_data_table():
-    start_date = date(2019, 10, 31)
-    end_date = date(2019, 11, 2)
-    date_start_str = start_date.strftime('%Y-%m-%d')
-    date_end_str = end_date.strftime('%Y-%m-%d')
-    response_json = get_asteroid_data(date_start_str, date_end_str)
+def create_asteroid_data_table(start_date="2019-10-31", end_date="2019-11-02"):
+    response_json = get_asteroid_data(start_date, end_date)
     table = PrettyTable(['name', 'id', 'close_approach_date_full'])
     for z in response_json["near_earth_objects"]:
         for x in response_json["near_earth_objects"][z]:
@@ -41,12 +33,10 @@ def create_asteroid_data_table():
     print(table)
 
 
-def calculate_velocities():
-    start_date = date(2020, 9, 10)
-    end_date = date(2020, 9, 17)
-    date_start_str = start_date.strftime('%Y-%m-%d')
-    date_end_str = end_date.strftime('%Y-%m-%d')
-    response_json = get_asteroid_data(date_start_str, date_end_str)
+def calculate_velocities(start_date="2020-09-10",
+                         end_date="2020-09-17"):
+
+    response_json = get_asteroid_data(start_date, end_date)
     min_veloc = 300_000_000.0
     max_veloc = 0.0
     count = 0
@@ -72,27 +62,26 @@ def calculate_velocities():
     print(table)
 
 
-def recent_hazardous_asteroid():
-    count = 0
-
+def recent_hazardous_asteroid(count=NUMBER_OF_HAZARDOUS_ASTEROID):
+    counter = 0
     end_date = datetime.now()
     start_date = end_date - timedelta(days=NUMBER_OF_DAY_RANGE)
     table = PrettyTable(['name', 'id', 'close_approach_date_full', 'is_potentially_hazardous_asteroid'])
-    while count < NUMBER_OF_HAZARDOUS_ASTEROID:
+    while counter < count:
         date_start_str = start_date.strftime('%Y-%m-%d')
         date_end_str = end_date.strftime('%Y-%m-%d')
         response_json = get_asteroid_data(date_start_str, date_end_str)
 
         for z in response_json["near_earth_objects"]:
             for x in response_json["near_earth_objects"][z]:
-                if bool(x['is_potentially_hazardous_asteroid']) and count < NUMBER_OF_HAZARDOUS_ASTEROID:
+                if bool(x['is_potentially_hazardous_asteroid']) and counter < count:
                     for y in x['close_approach_data']:
                         table.add_row(
                             [x['name'], x['id'], y['close_approach_date_full'], x['is_potentially_hazardous_asteroid']])
 
-                    count += 1
+                    counter += 1
 
-        if count < NUMBER_OF_HAZARDOUS_ASTEROID:
+        if counter < count:
             end_date = start_date
             start_date = start_date - timedelta(days=NUMBER_OF_DAY_RANGE)
     print(table)
@@ -101,10 +90,12 @@ def recent_hazardous_asteroid():
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     load_dotenv()
-    print(f"\t\t\ttable of Near Of Earth Asteroid")
-    create_asteroid_data_table()
-    print(f"\n\n\t table of Velocity of fastest, slowest, mean and median ")
-    calculate_velocities()
-    print(f"\n\n\t\t\t\ttable of Near Of Earth Asteroid which potentially hazardous")
-    recent_hazardous_asteroid()
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    config_object = ConfigParser()
+    config_object.read("config.ini")
+    service_info = config_object['service']
+    print(f"\t\t\tTable of Near Of Earth Asteroid")
+    create_asteroid_data_table(service_info['start_date_asteroid'], service_info['end_date_asteroid'])
+    print(f"\t\t\tTable of Velocity of fastest, slowest, mean and media")
+    calculate_velocities(service_info['start_date_velocities'], service_info['end_date_velocities'])
+    print(f"\n\n\t\t\t\tTable of Near Of Earth Asteroid which potentially hazardous")
+    recent_hazardous_asteroid(int(service_info['number_of_hazardous_asteroid']))
