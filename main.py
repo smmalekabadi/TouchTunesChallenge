@@ -4,7 +4,8 @@ from datetime import datetime, date, timedelta
 from prettytable import PrettyTable
 from dotenv import load_dotenv
 from configparser import ConfigParser
-NUMBER_OF_HAZARDOUS_ASTEROID=3
+
+NUMBER_OF_HAZARDOUS_ASTEROID = 3
 NUMBER_OF_DAY_RANGE = 7
 
 
@@ -35,7 +36,6 @@ def create_asteroid_data_table(start_date="2019-10-31", end_date="2019-11-02"):
 
 def calculate_velocities(start_date="2020-09-10",
                          end_date="2020-09-17"):
-
     response_json = get_asteroid_data(start_date, end_date)
     min_veloc = 300_000_000.0
     max_veloc = 0.0
@@ -60,6 +60,7 @@ def calculate_velocities(start_date="2020-09-10",
     table = PrettyTable(['slowest', 'fastest', 'mean', 'median'])
     table.add_row([min_veloc, max_veloc, sum / count, median])
     print(table)
+    return min_veloc, max_veloc, sum / count, median
 
 
 def recent_hazardous_asteroid(count=NUMBER_OF_HAZARDOUS_ASTEROID):
@@ -87,12 +88,17 @@ def recent_hazardous_asteroid(count=NUMBER_OF_HAZARDOUS_ASTEROID):
     print(table)
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
+def configure():
     load_dotenv()
     config_object = ConfigParser()
     config_object.read("config.ini")
     service_info = config_object['service']
+    return service_info
+
+
+# Press the green button in the gutter to run the script.
+if __name__ == '__main__':
+    service_info = configure()
     print(f"\t\t\tTable of Near Of Earth Asteroid")
     create_asteroid_data_table(service_info['start_date_asteroid'], service_info['end_date_asteroid'])
     print(f"\t\t\tTable of Velocity of fastest, slowest, mean and media")
