@@ -40,7 +40,7 @@ docker-compose up  --force-recreate --no-deps --build
 #### Run docker stand alone with default config
 
 ```
-docker run --env-file ./.env malekabadi/touchtunes_challenge:latest
+docker run --env-file ./.env --mount type=bind,source=$(pwd)/config.ini,target=/config.ini touchtunes_challenge
 ```
 
 ### Troubleshooting

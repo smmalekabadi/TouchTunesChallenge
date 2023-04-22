@@ -1,6 +1,6 @@
 import os
 import requests
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta
 from prettytable import PrettyTable
 from dotenv import load_dotenv
 from configparser import ConfigParser

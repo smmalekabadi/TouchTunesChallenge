@@ -5,3 +5,7 @@ services:
     env_file:
       - .env
     build: .
+    volumes:
+      - type: bind
+        source: ./config.ini
+        target: /config.ini
