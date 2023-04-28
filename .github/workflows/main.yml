@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - main
+env:
+  env_var: ${{ secrets.API_KEY }}
 
 jobs:
   test:
