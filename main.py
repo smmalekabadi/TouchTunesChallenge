@@ -32,6 +32,7 @@ def create_asteroid_data_table(start_date="2019-10-31", end_date="2019-11-02"):
             for y in x['close_approach_data']:
                 table.add_row([x['name'], x['id'], y['close_approach_date_full']])
     print(table)
+    return table
 
 
 def calculate_velocities(start_date="2020-09-10",
