@@ -3,8 +3,7 @@ on:
   push:
     branches:
       - main
-env:
-  env_var: ${{ secrets.API_KEY }}
+
 
 jobs:
   test:
@@ -27,9 +26,10 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run tests
-        run: |
-          python -m unittest test.py
-
+        run: python -m unittest test.py
+        env:
+          CI: true
+          API_KEY: ${{ secrets.API_KEY }}
   build_and_push:
     needs: test
     runs-on: ubuntu-latest
