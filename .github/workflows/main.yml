@@ -28,7 +28,6 @@ jobs:
       - name: Run tests
         run: python -m unittest test.py
         env:
-          CI: true
           API_KEY: ${{ secrets.API_KEY }}
   build_and_push:
     needs: test
